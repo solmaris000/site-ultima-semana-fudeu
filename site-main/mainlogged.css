@@ -1,0 +1,140 @@
+body {
+  margin: 0;
+  background-color: #00222A; 
+  color: #D6C28C; 
+  font-family: 'Georgia', serif;
+}
+
+:root{
+  --bg:#00222A;
+  --muted:#0B1114;
+  --accent:#D6C28C;
+  --accent-dark:#bfa86a;
+  --danger:#ff6b6b;
+}
+
+header {
+  background-color: rgba(11,17,20,0.85);
+  backdrop-filter: blur(6px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 40px;
+}
+
+.header-left { display:flex; align-items:center; gap:12px }
+
+.nomepequeno { margin-right: 0 }
+
+.logo { width:40px; height:40px; background:#ccc; border-radius:50% }
+
+.navegacaoheader { display:flex; align-items:center; gap:12px }
+
+.playnow { 
+  background-color: #D6C28C;
+  color: #00222A;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+
+/* Ensure playnow link remains visible above other header elements and keeps its color */
+.navegacaoheader a.playnow { color: #00222A; position: relative; z-index: 2000; display: inline-block }
+
+.profile { position: relative }
+.profile-btn { background:none; border:0; padding:0; cursor:pointer }
+.profile-img { width:40px; height:40px; border-radius:50%; display:block }
+
+.profile-menu { position:absolute; right:0; top:calc(100% + 8px); background:#0B1114; color:#D6C28C; min-width:160px; border-radius:6px; box-shadow:0 8px 24px rgba(0,0,0,0.6); opacity:0; transform: translateY(-6px); transition:opacity 180ms ease, transform 180ms ease; pointer-events:none }
+.profile-menu.open { opacity:1; transform: translateY(0); pointer-events:auto }
+.profile-menu a { display:block; padding:10px 12px; color:inherit; text-decoration:none }
+.profile-menu a:hover { background:rgba(214,194,140,0.08) }
+
+/* popup arrow */
+.profile-menu::before{ content:""; position:absolute; right:14px; top:-8px; width:12px; height:12px; background:var(--muted); transform: rotate(45deg); box-shadow: 0 2px 6px rgba(0,0,0,0.25); border-left:1px solid rgba(214,194,140,0.03); border-top:1px solid rgba(214,194,140,0.03) }
+
+.profile-btn:focus{ outline:2px solid rgba(214,194,140,0.18); border-radius:50% }
+.profile-menu a { transition: background 120ms ease, color 120ms ease }
+
+
+main { text-align:center; padding:36px 20px }
+.titulo { font-family: 'UnifrakturCook', cursive; font-size:48px; color:#D6C28C }
+
+.cards { display:flex; justify-content:center; gap:25px }
+.card { margin-top:48px; width:185px; height:125px; background:#ccc }
+.card img { width:100%; height:100%; object-fit:cover }
+
+.card { border-radius:8px; overflow:hidden; box-shadow: 0 6px 18px rgba(0,0,0,0.35); transition: transform 180ms ease, box-shadow 180ms ease }
+.card:hover { transform: translateY(-6px); box-shadow: 0 14px 32px rgba(0,0,0,0.45) }
+
+/* preview overlay (same as main) */
+#preview { position: fixed; top:50%; left:50%; transform: translate(-50%,-50%) scale(0.9); width:90vw; height:80vh; background-size:contain; background-repeat:no-repeat; background-position:center; background-color: rgba(0,0,0,0.85); box-shadow:0 10px 60px rgba(0,0,0,0.7); opacity:0; pointer-events:none; transition: opacity 220ms ease, transform 220ms ease; z-index:1200 }
+#preview.visible{ opacity:1; transform: translate(-50%,-50%) scale(1); pointer-events:auto }
+
+@media (max-width:800px){ #preview{display:none} }
+
+.hero { position:relative }
+.hero-overlay { position:absolute; inset:0; background: linear-gradient(180deg, rgba(0,0,0,0.45), rgba(0,0,0,0.65)); z-index:1 }
+.hero .titulo { position:relative; z-index:2 }
+#preview { display:flex; align-items:flex-start; justify-content:flex-end }
+#preview #preview-close { margin:12px; background:transparent; color:#fff; border:0; font-size:28px; cursor:pointer }
+
+/* modal */
+#modal { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; background: rgba(0,0,0,0.85); opacity:0; pointer-events:none; transition: opacity 180ms ease; z-index:1300 }
+#modal.open { opacity:1; pointer-events:auto }
+#modal #modal-close { position: absolute; top:16px; right:20px; background:transparent; color:#fff; border:0; font-size:30px; cursor:pointer }
+#modal #modal-img { width:90vw; max-width:1200px; height:80vh; background-size:contain; background-repeat:no-repeat; background-position:center }
+
+@media (max-width:800px){ .hero .titulo { font-size:40px } }
+
+/* pages: centered layout for profile/settings/confirm */
+.centered { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:60px 20px; min-height:60vh; color: #D6C28C }
+.profile-view { display:flex; gap:20px; align-items:center; margin-top:18px }
+.profile-large { width:120px; height:120px; border-radius:12px; object-fit:cover; border:3px solid rgba(214,194,140,0.08); background:#07181A }
+.profile-info p { margin:6px 0 }
+
+/* settings form */
+#settings-form, form#settings-form { display:flex; flex-direction:column; gap:12px; max-width:420px; width:100%; margin-top:18px }
+label { display:flex; flex-direction:column; gap:8px; color:inherit; font-size:14px }
+input[type="text"], input[type="file"] { padding:10px 12px; border-radius:8px; border:1px solid rgba(214,194,140,0.06); background: rgba(255,255,255,0.02); color:inherit }
+
+.settings-actions, .confirm-actions { display:flex; gap:12px; justify-content:center; margin-top:12px }
+button { cursor:pointer; padding:8px 14px; border-radius:8px; border:0; background:transparent; color:inherit }
+button.primary { background:#D6C28C; color:#00222A; font-weight:700 }
+button.danger { background:transparent; color:#ff6b6b; border:1px solid rgba(255,107,107,0.08) }
+.confirm-actions button { min-width:90px }
+
+.primary:hover{ filter:brightness(.96) }
+.danger:hover{ filter:brightness(.95); transform:translateY(-1px) }
+
+/* back link styling */
+.navegacaoheader a { color:var(--accent); text-decoration:none; padding:6px 10px }
+.navegacaoheader a:hover{ opacity:.9 }
+
+/* headings */
+.centered h2{ font-family: 'UnifrakturCook', cursive; color:var(--accent); font-size:34px; margin:0 }
+
+/* subtle glass effect for centered panels */
+.centered { background: linear-gradient(180deg, rgba(11,17,20,0.35), rgba(11,17,20,0.25)); border-radius:10px }
+
+/* ensure menu overlays other content */
+.profile-menu{ z-index:1400 }
+
+
+/* profile popup tweaks */
+.profile-menu { min-width:200px }
+.profile-menu a { font-size:14px }
+
+/* small responsive tweaks */
+@media (max-width:600px) {
+  .profile-large { width:96px; height:96px }
+  .titulo { font-size:36px }
+  .cards { gap:14px }
+}
+
+/* subtle transitions */
+a, .playnow, button { transition: all 140ms ease }

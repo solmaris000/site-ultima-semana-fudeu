@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Screams of Oblivion — Logged</title>
+  <link rel="stylesheet" href="mainlogged.css">
+  <link href="https://fonts.googleapis.com/css2?family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <div class="header-left">
+      <div class="logo" aria-hidden="true"></div>
+      <div class="nomepequeno">
+        <h5>
+          <span>Screams</span><br>
+          <span>of</span><br>
+          <span>Oblivion</span>
+        </h5>
+      </div>
+    </div>
+
+    <nav class="navegacaoheader">
+      <a href="#" class="playnow" data-i18n="play_now">Play Now</a>
+      <div class="profile">
+        <button id="profile-toggle" class="profile-btn" aria-haspopup="true" aria-expanded="false">
+          <img id="header-avatar" src="images/profile-placeholder.png" alt="profile" class="profile-img">
+        </button>
+        <div class="profile-menu" role="menu" aria-hidden="true">
+          <a href="profile.html" data-i18n="my_profile">My Profile</a>
+          <a href="settings.html" data-i18n="settings">Settings</a>
+          <a href="logout-confirm.html" data-i18n="logout">Log Out</a>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="titulo">
+        <h1>
+          <span>Screams</span><br>
+          <span>of</span><br>
+          <span>Oblivion</span>
+        </h1>
+      </div>
+    </section>
+
+    <div class="cards">
+      <div class="card" data-full="images/full1.jpg">
+        <img src="images/thumb1.jpg" alt="thumb 1">
+      </div>
+      <div class="card" data-full="images/full2.jpg">
+        <img src="images/thumb2.jpg" alt="thumb 2">
+      </div>
+      <div class="card" data-full="images/full3.jpg">
+        <img src="images/thumb3.jpg" alt="thumb 3">
+      </div>
+      <div class="card" data-full="images/full4.jpg">
+        <img src="images/thumb4.jpg" alt="thumb 4">
+      </div>
+    </div>
+
+    <div id="preview" aria-hidden="true"></div>
+
+    <div id="modal" role="dialog" aria-hidden="true">
+      <button id="modal-close" aria-label="Close">×</button>
+      <div id="modal-img" aria-hidden="true"></div>
+    </div>
+
+    
+
+    <script>
+      const preview = document.getElementById('preview');
+      const modal = document.getElementById('modal');
+      const modalClose = document.getElementById('modal-close');
+      const modalImg = document.getElementById('modal-img');
+      let pinned = false;
+      let currentSrc = null;
+      let lastFocused = null;
+
+      function showPreview(src) {
+        if (!src) return;
+        currentSrc = src;
+        preview.style.backgroundImage = `url('${src}')`;
+        preview.classList.add('visible');
+        preview.setAttribute('aria-hidden', 'false');
+      }
+      function hidePreview() {
+        if (pinned) return;
+        preview.classList.remove('visible');
+        preview.setAttribute('aria-hidden', 'true');
+      }
+
+      function openModal(src) {
+        if (!src) return;
+        modalImg.style.backgroundImage = `url('${src}')`;
+        modal.classList.add('open');
+        modal.setAttribute('aria-hidden', 'false');
+        lastFocused = document.activeElement;
+        if (modalClose) modalClose.focus();
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeModal() {
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+        if (lastFocused) lastFocused.focus();
+      }
+
+      document.querySelectorAll('.card').forEach(card => {
+        const src = card.dataset.full;
+        card.addEventListener('mouseenter', () => showPreview(src));
+        card.addEventListener('mouseleave', hidePreview);
+        card.addEventListener('click', () => {
+          pinned = !pinned;
+          preview.classList.toggle('visible', pinned);
+          preview.setAttribute('aria-hidden', pinned ? 'false' : 'true');
+        });
+      });
+
+      preview.addEventListener('click', () => { if (preview.classList.contains('visible')) openModal(currentSrc); });
+
+      if (modalClose) modalClose.addEventListener('click', closeModal);
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          if (modal.classList.contains('open')) closeModal();
+          else if (preview.classList.contains('visible')) {
+            pinned = false;
+            preview.classList.remove('visible');
+            preview.setAttribute('aria-hidden', 'true');
+          }
+        }
+      });
+    </script>
+  </main>
+  <script src="api-client.js"></script>
+  <script src="i18n.js"></script>
+  <script>
+    // Verificar autenticação e carregar dados do usuário
+    async function carregarDados() {
+      if (!estaAutenticado()) {
+        window.location.href = 'login.html';
+        return;
+      }
+
+      try {
+        const usuario = await obterUsuarioAtual();
+        if (usuario) {
+          const headerAvatar = document.getElementById('header-avatar');
+          if (headerAvatar) {
+            headerAvatar.src = usuario.avatar || 'images/profile-placeholder.png';
+            headerAvatar.alt = usuario.displayName || 'Profile';
+          }
+        } else {
+          // Usuário não encontrado, fazer logout
+          window.location.href = 'login.html';
+        }
+      } catch (erro) {
+        console.error('Erro ao carregar dados:', erro);
+        window.location.href = 'login.html';
+      }
+    }
+
+    // Initialize i18n and load translations
+    (async () => {
+      await i18n.initialize();
+      i18n.applyTranslations();
+      // debug: log current language and playnow content
+      try {
+        console.log('i18n currentLang:', i18n.getCurrentLang());
+        const p = document.querySelector('.playnow');
+        console.log('playnow element:', p);
+        if (p) console.log('playnow textContent:', JSON.stringify(p.textContent), 'innerHTML:', p.innerHTML);
+      } catch (e) { console.error('i18n debug error', e); }
+      await carregarDados();
+    })();
+  </script>
+  <script>
+    // profile popup toggle behavior
+    (function () {
+      const toggle = document.getElementById('profile-toggle');
+      const menu = document.querySelector('.profile-menu');
+      if (!toggle || !menu) return;
+
+      function openMenu() {
+        menu.classList.add('open');
+        menu.setAttribute('aria-hidden', 'false');
+        toggle.setAttribute('aria-expanded', 'true');
+      }
+      function closeMenu() {
+        menu.classList.remove('open');
+        menu.setAttribute('aria-hidden', 'true');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+
+      toggle.addEventListener('click', (e) => {
+        if (menu.classList.contains('open')) closeMenu();
+        else openMenu();
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!menu.classList.contains('open')) return;
+        if (toggle.contains(e.target) || menu.contains(e.target)) return;
+        closeMenu();
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && menu.classList.contains('open')) closeMenu();
+      });
+    })();
+  </script>
+</body>
+</html>
+

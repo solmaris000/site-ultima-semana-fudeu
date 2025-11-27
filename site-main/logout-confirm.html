@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log Out — Screams of Oblivion</title>
+  <link rel="stylesheet" href="mainlogged.css">
+</head>
+<body>
+  <main class="centered">
+    <h2 data-i18n="logout_confirm">Log out?</h2>
+    <p data-i18n="logout_question">Are you sure you want to log out?</p>
+    <div class="confirm-actions">
+      <button id="no-btn">No</button>
+      <button id="yes-btn" class="danger">Yes</button>
+    </div>
+  </main>
+  <script src="api-client.js"></script>
+  <script src="i18n.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      // Initialize i18n from localStorage first, then prefer server-stored language for logged users
+      await i18n.initialize();
+
+      // If user is authenticated, fetch language preference from server and apply it
+      try {
+        if (estaAutenticado()) {
+          const usuario = await obterUsuarioAtual();
+          if (usuario && usuario.id) {
+            const langRes = await fetch('../api/get_language.php', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ id: usuario.id })
+            });
+            const langData = await langRes.json();
+            if (langData && langData.idioma) {
+              await i18n.loadLanguage(langData.idioma);
+            }
+          }
+        }
+      } catch (e) {
+        console.debug('Could not load language from server, using local language');
+      }
+
+      i18n.applyTranslations();
+
+      document.getElementById('no-btn').addEventListener('click', () => {
+        location.href = 'mainlogged.html';
+      });
+
+      document.getElementById('yes-btn').addEventListener('click', async () => {
+        await fazerLogout();
+        window.location.href = 'main.html';
+      });
+    });
+  </script>
+</body>
+</html>
