@@ -1,1 +1,0 @@
-Esse é o site do nosso tcc. No momento, a pasta inteira do site está conectado com o meu computador (Henrique) por meio do git. Se for fazer alguma mudança, favor avisar. No jogo, fique à vontade, pois não está conectado.

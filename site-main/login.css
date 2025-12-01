@@ -1,8 +1,0 @@
-body { margin:0; font-family: 'Georgia', serif; background:#00222A; color:#D6C28C }
-.auth-page { min-height:100vh; display:flex; align-items:center; justify-content:center }
-.auth-form { background:#0B1114; padding:28px; border-radius:8px; box-shadow:0 10px 40px rgba(0,0,0,0.6); width:320px }
-.auth-form h2 { margin:0 0 12px 0 }
-.auth-form label { display:block; margin-bottom:10px; font-size:14px }
-.auth-form input { width:100%; padding:8px; margin-top:6px; border-radius:6px; border:1px solid #223; background:#012429; color:#D6C28C }
-.auth-form button { width:100%; padding:10px; margin-top:8px; background:#D6C28C; color:#00222A; border:0; border-radius:6px; font-weight:bold }
-.auth-form a { color:#D6C28C }

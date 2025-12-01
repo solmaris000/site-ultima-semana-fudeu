@@ -1,5 +1,0 @@
-/* reuse login styles layout */
-@import url('login.css');
-
-/* small overrides */
-.auth-form h2 { margin-bottom:12px }
